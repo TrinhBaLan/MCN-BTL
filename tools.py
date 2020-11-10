@@ -29,14 +29,14 @@ def write_audio_file(path, samplerate, data):
     except WavFileWarning:
         print("There seems to be a problem reading your WAV file.")
 
-def plot_waveform(length, data):
+def plot_waveform(length, data, data_label):
     """
     Plot the specified data
     :param length: Length of the audio file
     :param data: Audio data as numpy array
     """
     time = np.linspace(0., length, data.shape[0])
-    plt.plot(time, data, label="Form")
+    plt.plot(time, data, label=data_label)
     plt.legend()
     plt.xlabel("Time [s]")
     plt.ylabel("Amplitude")
