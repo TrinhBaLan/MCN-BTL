@@ -41,3 +41,9 @@ def plot_waveform(length, data, data_label):
     plt.xlabel("Time [s]")
     plt.ylabel("Amplitude")
     plt.savefig("test.png")
+
+def mse_eval(data, reconstructed_data):
+    sum = 0.0
+    for i  in range (0, len(data)):
+        sum += (int(reconstructed_data[i]) - int(data[i]))**2
+    return sum/len(data)
