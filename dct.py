@@ -40,7 +40,9 @@ def dct_transform():
     for num in frames_idct:
         reconstrusted_data.extend(frames_idct[num])
     
-    reconstrusted_data = array(reconstrusted_data)
+    reconstrusted_data = array(reconstrusted_data)[:len(data)].astype(data.dtype)
+    print(str(reconstrusted_data.dtype))
+    
 
     print("Writing to a new audio file...")
     reconstrusted_file = "outputs/" + original_file.split("/")[1].split(".")[0] + "-dct.wav" # Get the filename before the extension
