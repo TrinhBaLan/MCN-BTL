@@ -5,8 +5,7 @@ from numpy import pad, array, round
 sample = 500 # Number of samples
 compress_ratio = 0.5 # Compressed data size to original data size
 
-def dct_transform(sample_rate, data):
-    
+def dct_transform(sample_rate, data, file):
     print("Original data: ", data)
     print("Plotting original data to test.png...")
     plot_waveform(len(data)/sample_rate, data, "Original")
@@ -15,7 +14,6 @@ def dct_transform(sample_rate, data):
     numzeros = sample - len(data) % sample # Number of zeroes to be padded 
     print("Padding zeroes to original data...")
     padded_data = pad(data, (0, numzeros), "constant", constant_values=0) 
-
     # Divide the data into frames of {sample} each
     frames = {}
     count = 0
@@ -41,8 +39,8 @@ def dct_transform(sample_rate, data):
     reconstrusted_data = array(reconstrusted_data)[:len(data)].astype(data.dtype)
 
     # Write the reconstructed data to a new file in the outputs folder
-    print("Writing to a new audio file...")
-    reconstrusted_file = "outputs/dct/" + original_file.split("/")[1] # Get the filename before the extension
+    reconstrusted_file = "outputs/dct/" + file.split("/")[-1] # Get the filename
+    print(f"Writing to outputs/dct/{reconstrusted_file}")
     write_audio_file(reconstrusted_file, sample_rate, reconstrusted_data)
 
     # Plot the reconstructed data
@@ -53,8 +51,3 @@ def dct_transform(sample_rate, data):
     # Calculate the MSE of the reconstrusted data
     print("MSE: " + str(mse_eval(data, reconstrusted_data)))
     return reconstrusted_data
-
-original_file = "audios/human_voice.wav"
-samplerate, data = read_audio_file(original_file)
-print(dct_transform(samplerate, data))
-

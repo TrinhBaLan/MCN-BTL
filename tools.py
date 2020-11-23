@@ -40,7 +40,7 @@ def plot_waveform(length, data, data_label):
     plt.legend()
     plt.xlabel("Time [s]")
     plt.ylabel("Amplitude")
-    plt.savefig("test.png")
+    plt.savefig("graph.png")
 
 def mse_eval(data, reconstructed_data):
     sum = 0.0
