@@ -42,7 +42,7 @@ def dct_transform(sample_rate, data):
 
     # Write the reconstructed data to a new file in the outputs folder
     print("Writing to a new audio file...")
-    reconstrusted_file = "outputs/" + original_file.split("/")[1].split(".")[0] + "-dct.wav" # Get the filename before the extension
+    reconstrusted_file = "outputs/dct/" + original_file.split("/")[1] # Get the filename before the extension
     write_audio_file(reconstrusted_file, sample_rate, reconstrusted_data)
 
     # Plot the reconstructed data
