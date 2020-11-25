@@ -37,17 +37,7 @@ def dct_transform(sample_rate, data, file):
     for num in frames_idct:
         reconstrusted_data.extend(frames_idct[num])
     reconstrusted_data = array(reconstrusted_data)[:len(data)].astype(data.dtype)
-
-    # Write the reconstructed data to a new file in the outputs folder
-    reconstrusted_file = "outputs/dct/" + file.split("/")[-1] # Get the filename
-    print(f"Writing to outputs/dct/{reconstrusted_file}")
-    write_audio_file(reconstrusted_file, sample_rate, reconstrusted_data)
-
     # Plot the reconstructed data
     print("Plotting reconstructed data to test.png...")
     plot_waveform(len(reconstrusted_data) / sample_rate, reconstrusted_data, "Reconstructed")
-    print("DONE!")
-
-    # Calculate the MSE of the reconstrusted data
-    print("MSE: " + str(mse_eval(data, reconstrusted_data)))
     return reconstrusted_data

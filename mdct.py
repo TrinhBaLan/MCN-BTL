@@ -2,7 +2,7 @@ from tools import *
 from numpy import pad, array, zeros, dot, hstack
 import math
 
-N = 1000  # number of samples
+N = 500  # number of samples
 pi = math.pi
 
 
@@ -39,7 +39,7 @@ def mdct_transform(sample_rate, data, file):
     # Inverse MDCT and split into halfs
     frame_inv = []
     for mdct_frame in mdct:
-        tmp = dot(matrix.T, mdct_frame)/(2*N)
+        tmp = dot(matrix.T, mdct_frame)/N
         frame_inv.append(tmp[:N])
         frame_inv.append(tmp[N:])
     #print(len(frame_inv))
@@ -72,14 +72,9 @@ def mdct_transform(sample_rate, data, file):
         reconstrusted_data.extend(imdct_frame)
 
     reconstrusted_data = array(reconstrusted_data)[:len(data)].astype(data.dtype)
-
-    reconstrusted_file = "outputs/mdct/" + file.split("/")[-1]  # Get the filename
-    print(f"Writing to outputs/mdct/{reconstrusted_file}")
-    write_audio_file(reconstrusted_file, sample_rate, reconstrusted_data)
-
     print("Plotting reconstructed data...")
     plot_waveform(len(reconstrusted_data) / sample_rate, reconstrusted_data, "Reconstructed")
-    print("DONE!")
+    return reconstrusted_data
 
 # create Nx2X matrix
 def gen_matrix(samples):

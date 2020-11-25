@@ -17,7 +17,7 @@ def read_audio_file(path):
     except WavFileWarning:
         print("There seems to be a problem reading your WAV file.")
 
-def write_audio_file(path, samplerate, data):
+def write_audio_file(path, samplerate, transformed_data):
     """
     Write spectified audio data to a WAV file
     :param path: File location
@@ -25,7 +25,17 @@ def write_audio_file(path, samplerate, data):
     :param data: Audio data as numpy array
     """
     try:
-        write(path, samplerate, data)
+        # See how many channel we got. Then write to output file
+        if len(transformed_data) == 1:
+            write(path, samplerate, transformed_data[0])
+        else:
+            left_channel = transformed_data[0]
+            right_channel = transformed_data[1]
+            output = []
+            for i in range(len(left_channel)):
+                output.append(np.array(left_channel[i], right_channel[i]))
+            write(path, samplerate, np.array(output))
+
     except WavFileWarning:
         print("There seems to be a problem reading your WAV file.")
 
@@ -47,3 +57,14 @@ def mse_eval(data, reconstructed_data):
     for i  in range (0, len(data)):
         sum += (int(reconstructed_data[i]) - int(data[i]))**2
     return sum/len(data)
+    
+def split_channel(data):
+    """
+    Detect the number of channels in the data
+    """
+    if len(data.shape) == 1:
+        return [data]
+    elif data.shape[1] == 2:
+        left_channel = data[:, 0]
+        right_channel = data[:, 1]
+        return [left_channel, right_channel]
