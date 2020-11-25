@@ -7,7 +7,7 @@ compress_ratio = 0.5 # Compressed data size to original data size
 
 def dct_transform(sample_rate, data, file):
     print("Original data: ", data)
-    print("Plotting original data to test.png...")
+    print("Plotting original data to graph.png...")
     plot_waveform(len(data)/sample_rate, data, "Original")
 
     # Pad zeroes to the end of the data array so that the number of array elements is divisible to {sample}
@@ -38,6 +38,6 @@ def dct_transform(sample_rate, data, file):
         reconstrusted_data.extend(frames_idct[num])
     reconstrusted_data = array(reconstrusted_data)[:len(data)].astype(data.dtype)
     # Plot the reconstructed data
-    print("Plotting reconstructed data to test.png...")
+    print("Plotting reconstructed data to graph.png...")
     plot_waveform(len(reconstrusted_data) / sample_rate, reconstrusted_data, "Reconstructed")
     return reconstrusted_data

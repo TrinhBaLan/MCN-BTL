@@ -5,7 +5,6 @@ import math
 N = 500  # number of samples
 pi = math.pi
 
-
 def mdct_transform(sample_rate, data, file):
     print("Original data: ", data)
     print("Plotting original data...")
