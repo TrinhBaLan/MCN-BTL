@@ -30,7 +30,8 @@ def main():
         channel_data = split_channel(data)
         transformed = []
         for channel in channel_data:
-            transformed.append(mdct_transform(samplerate, data, args.file))
+            print(channel)
+            transformed.append(mdct_transform(samplerate, channel, args.file))
         # Write the reconstructed data to a new file in the outputs folder
         reconstrusted_file = "outputs/mdct/" + args.file.split("/")[-1] # Get the filename
         print(f"Writing to {reconstrusted_file}")
