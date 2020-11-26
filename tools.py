@@ -44,6 +44,7 @@ def plot_waveform(length, data, data_label):
     :param data: Audio data as numpy array
     """
     time = np.linspace(0., length, data.shape[0])
+    plt.title("Graph of audio signal")
     plt.plot(time, data, label=data_label)
     plt.legend()
     plt.xlabel("Time [s]")
