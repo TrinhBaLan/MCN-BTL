@@ -31,10 +31,8 @@ def write_audio_file(path, samplerate, transformed_data):
         else:
             left_channel = transformed_data[0]
             right_channel = transformed_data[1]
-            output = []
-            for i in range(len(left_channel)):
-                output.append(np.array(left_channel[i], right_channel[i]))
-            write(path, samplerate, np.array(output))
+            output = np.vstack((left_channel, right_channel)).T
+            write(path, samplerate, output)
 
     except WavFileWarning:
         print("There seems to be a problem reading your WAV file.")
