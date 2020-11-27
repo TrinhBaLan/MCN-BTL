@@ -37,12 +37,36 @@ def write_audio_file(path, samplerate, transformed_data):
     except WavFileWarning:
         print("There seems to be a problem reading your WAV file.")
 
-def plot_waveform(length, data, data_label):
+def plot_waveform(samplerate, original_data, transformed_data, number_of_channels):
     """
     Plot the specified data
-    :param length: Length of the audio file
+    :param samplerate: Sample rate of the audio file
     :param data: Audio data as numpy array
     """
+    length = len(original_data[0])/samplerate
+    time = np.linspace(0., length, original_data[0].shape[0])
+    fig, ax = plt.subplots(number_of_channels)
+    axs = []
+    if number_of_channels == 1:
+        axs.append(ax)
+    elif number_of_channels == 2:
+        axs.extend(ax)
+    fig.suptitle("Graph of audio signal")
+    #plt.setp(axs[:], xlabel='Time')
+    #plt.setp(axs[:], ylabel='Amplitude')
+    for i in range(0, number_of_channels):
+        axs[i].plot(time, original_data[i], label='Original', linewidth=1,zorder=1)
+        axs[i].plot(time, transformed_data[i], label='Reconstructed', linewidth=1, zorder=2)
+        axs[i].legend(loc="upper right")
+        '''
+        if i == 0:
+            axs[i].set_title('Left Channel')
+        elif i == 1:
+            axs[i].set_title('Right Channel')
+        '''
+    plt.savefig("graph.png")           
+
+    '''
     time = np.linspace(0., length, data.shape[0])
     plt.title("Graph of audio signal")
     plt.plot(time, data, label=data_label)
@@ -50,6 +74,7 @@ def plot_waveform(length, data, data_label):
     plt.xlabel("Time [s]")
     plt.ylabel("Amplitude")
     plt.savefig("graph.png")
+    '''
 
 def mse_eval(data, reconstructed_data):
     sum = 0.0

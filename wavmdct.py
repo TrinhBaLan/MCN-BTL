@@ -31,7 +31,8 @@ def handle_dct(file):
     transformed = []
     for channel in channel_data:
         transformed.append(dct_transform(samplerate, channel, file))
-
+    # Plot original and reconstructed waveform
+    plot_waveform(samplerate, channel_data, transformed, len(channel_data))
     # Check if output folder exists, create it if it isn't
     if not Path("./outputs/dct/").is_dir():
         Path("./outputs/dct/").mkdir(parents=True)
@@ -52,6 +53,8 @@ def handle_mdct(file):
     transformed = []
     for channel in channel_data:
         transformed.append(mdct_transform(samplerate, channel, file))
+    # Plot original and reconstructed waveform
+    plot_waveform(samplerate, channel_data, transformed, len(channel_data))
     # Check if output folder exists, create it if it isn't
     if not Path("./outputs/mdct/").is_dir():
         Path("./outputs/mdct/").mkdir(parents=True)

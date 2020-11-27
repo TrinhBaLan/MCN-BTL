@@ -4,11 +4,12 @@ import math
 
 N = 500  # number of samples
 pi = math.pi
+compress_ratio = 0.2
 
 def mdct_transform(sample_rate, data, file):
     print("Original data: ", data)
-    print("Plotting original data...")
-    plot_waveform(len(data) / sample_rate, data, "Original")
+    #print("Plotting original data...")
+    #plot_waveform(len(data) / sample_rate, data, "Original")
     # matrix = gen_matrix(N//2)
     # matrix to transform 2 frames at once
     matrix = gen_matrix(N)
@@ -33,11 +34,16 @@ def mdct_transform(sample_rate, data, file):
         # Merge frame i with i+1 then perform MDCT
         tmp = dot(matrix, hstack((frame[i],(frame[i+1]))).T)
         mdct.append(tmp)
-    #print(len(mdct))
-
+    samples_keep = int(round(N*compress_ratio))
+    compressed_mdct = []
+    for i in range(0, len(mdct)):
+        compressed_mdct.append(mdct[i][:samples_keep])
+    
     # Inverse MDCT and split into halfs
     frame_inv = []
-    for mdct_frame in mdct:
+    for mdct_frame in compressed_mdct:
+        # Pad zeroes to frame to restore size
+        mdct_frame = pad(mdct_frame, (0, (N - samples_keep)), "constant", constant_values=0)
         tmp = dot(matrix.T, mdct_frame)/N
         frame_inv.append(tmp[:N])
         frame_inv.append(tmp[N:])
@@ -71,8 +77,8 @@ def mdct_transform(sample_rate, data, file):
         reconstrusted_data.extend(imdct_frame)
 
     reconstrusted_data = array(reconstrusted_data)[:len(data)].astype(data.dtype)
-    print("Plotting reconstructed data...")
-    plot_waveform(len(reconstrusted_data) / sample_rate, reconstrusted_data, "Reconstructed")
+    #print("Plotting reconstructed data...")
+    #plot_waveform(len(reconstrusted_data) / sample_rate, reconstrusted_data, "Reconstructed")
     return reconstrusted_data
 
 # create Nx2X matrix
