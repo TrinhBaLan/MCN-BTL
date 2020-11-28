@@ -2,28 +2,27 @@ from tools import *
 from numpy import pad, array, zeros, dot, hstack
 import math
 
-N = 500  # number of samples
 pi = math.pi
-compress_ratio = 0.2
 
-def mdct_transform(sample_rate, data, file):
+def mdct_transform(sample_rate, data, file, sample_per_frame, compress_ratio):
     print("Original data: ", data)
     #print("Plotting original data...")
     #plot_waveform(len(data) / sample_rate, data, "Original")
-    # matrix = gen_matrix(N//2)
+    # matrix = gen_matrix(sample_per_frame//2)
     # matrix to transform 2 frames at once
-    matrix = gen_matrix(N)
+    matrix = gen_matrix(sample_per_frame)
 
+    # Pad zeroes so the data can be divided by sample_per_frame
     print("Padding zeroes to original data...")
-    numzeros = N - len(data) % N
+    numzeros = sample_per_frame - len(data) % sample_per_frame
     padded_data = pad(data, (0, numzeros), "constant", constant_values=0)
 
-    # divide data to frames
-    print(f"Dividing data to {N} frame...")
+    # Divide data to frames
+    print(f"Dividing data to {sample_per_frame} frame...")
     frame = {}
     count = 0
-    for i in range(0, len(padded_data), N):
-        frame[count] = padded_data[i:i+N]
+    for i in range(0, len(padded_data), sample_per_frame):
+        frame[count] = padded_data[i:i+sample_per_frame]
         count += 1
     # print(frame)
 
@@ -34,7 +33,8 @@ def mdct_transform(sample_rate, data, file):
         # Merge frame i with i+1 then perform MDCT
         tmp = dot(matrix, hstack((frame[i],(frame[i+1]))).T)
         mdct.append(tmp)
-    samples_keep = int(round(N*compress_ratio))
+    samples_keep = int(round(sample_per_frame*compress_ratio))
+
     compressed_mdct = []
     for i in range(0, len(mdct)):
         compressed_mdct.append(mdct[i][:samples_keep])
@@ -43,10 +43,10 @@ def mdct_transform(sample_rate, data, file):
     frame_inv = []
     for mdct_frame in compressed_mdct:
         # Pad zeroes to frame to restore size
-        mdct_frame = pad(mdct_frame, (0, (N - samples_keep)), "constant", constant_values=0)
-        tmp = dot(matrix.T, mdct_frame)/N
-        frame_inv.append(tmp[:N])
-        frame_inv.append(tmp[N:])
+        mdct_frame = pad(mdct_frame, (0, (sample_per_frame - samples_keep)), "constant", constant_values=0)
+        tmp = dot(matrix.T, mdct_frame)/sample_per_frame
+        frame_inv.append(tmp[:sample_per_frame])
+        frame_inv.append(tmp[sample_per_frame:])
     #print(len(frame_inv))
 
     # Resolve overlapping to reduce end-effect at the border of frames
@@ -69,19 +69,16 @@ def mdct_transform(sample_rate, data, file):
             reconstructed_frames.append(tmp)
             i+=2
     
-    #print(reconstructed_frames[0])
-
     reconstrusted_data = []
     # for imdct_frame in frame_inv:
     for imdct_frame in reconstructed_frames:
         reconstrusted_data.extend(imdct_frame)
 
     reconstrusted_data = array(reconstrusted_data)[:len(data)].astype(data.dtype)
-    #print("Plotting reconstructed data...")
-    #plot_waveform(len(reconstrusted_data) / sample_rate, reconstrusted_data, "Reconstructed")
+
     return reconstrusted_data
 
-# create Nx2X matrix
+# Create Nx2N matrix
 def gen_matrix(samples):
     matrix = zeros(shape=(samples, samples * 2))
     for k in range(0, samples):

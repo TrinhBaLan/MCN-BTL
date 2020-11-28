@@ -84,7 +84,8 @@ def mse_eval(data, reconstructed_data):
     
 def split_channel(data):
     """
-    Detect the number of channels in the data
+    Detect the number of channels in the data.
+    Only support mono and stereo for now
     """
     if len(data.shape) == 1:
         return [data]
