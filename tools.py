@@ -1,6 +1,9 @@
 from scipy.io.wavfile import read, write, WavFileWarning
 import matplotlib.pyplot as plt
 import numpy as np
+from pickle import dump, load
+from pathlib import Path
+import pickletools
 
 def read_audio_file(path):
     """
@@ -36,6 +39,30 @@ def write_audio_file(path, samplerate, transformed_data):
 
     except WavFileWarning:
         print("There seems to be a problem reading your WAV file.")
+
+def write_compressed_file(compressed_object, output_file):
+    """
+    Write the compressed object to a binary file
+    """
+    if not Path("./compressed/" + output_file.split("/")[0]).is_dir(): # Get the file location (DCT or MDCT)
+        Path("./compressed/" + output_file.split("/")[0]).mkdir(parents=True)
+    try:
+        with open("./compressed/" + output_file, "wb") as output:
+            dump(compressed_object, output)
+    except Exception as e:
+        print(e)
+
+def read_compressed_file(input_file):
+    """
+    Read the compressed object to a binary file
+    """
+    try:
+        with open("./compressed/" + input_file) as input:
+            data = load(input)
+    except Exception as e:
+        print(e)
+    finally:
+        return data
 
 def plot_waveform(samplerate, original_data, transformed_data, number_of_channels):
     """
@@ -93,3 +120,5 @@ def split_channel(data):
         left_channel = data[:, 0]
         right_channel = data[:, 1]
         return [left_channel, right_channel]
+
+
