@@ -54,6 +54,8 @@ def handle_dct(file, sample_per_frame, compress_ratio):
     reconstrusted_file = "./outputs/dct/" + file.split("/")[-1]  # Get the filename
     print(f"Writing to '{reconstrusted_file}'")
     write_audio_file(reconstrusted_file, samplerate, transformed)
+    print('MSE: '+str(mse_eval(channel_data, transformed)))
+    plot_error_function(channel_data, transformed)
     print("DONE!")
 
 
@@ -80,6 +82,8 @@ def handle_mdct(file, sample_per_frame, compress_ratio):
     reconstrusted_file = "./outputs/mdct/" + file.split("/")[-1]  # Get the filename
     print(f"Writing to '{reconstrusted_file}'")
     write_audio_file(reconstrusted_file, samplerate, transformed)
+    print('MSE: '+str(mse_eval(channel_data, transformed)))
+    plot_error_function(channel_data, transformed)
     print("DONE!")
 
 main()

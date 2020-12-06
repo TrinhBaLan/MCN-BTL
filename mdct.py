@@ -20,11 +20,14 @@ def mdct_transform(sample_rate, data, file, sample_per_frame, compress_ratio):
 
     # Divide data to frames
     print(f"Dividing data to {sample_per_frame} frame...")
-    frame = {}
-    count = 0
+    frame = []
+    frame.append(zeros(sample_per_frame))
+    count = 1
     for i in range(0, len(padded_data), sample_per_frame):
-        frame[count] = padded_data[i:i+sample_per_frame]
+        frame.append(padded_data[i:i+sample_per_frame])
         count += 1
+    frame.append(zeros(sample_per_frame))
+    count += 1
     # print(frame)
 
     # Overlapping MDCT
@@ -64,8 +67,8 @@ def mdct_transform(sample_rate, data, file, sample_per_frame, compress_ratio):
     i = 0
     while i < len(frame_inv): 
         if (i == 0) or (i == len(frame_inv)-1):
-            # The first and the last frames are not overlapped
-            reconstructed_frames.append(frame_inv[i])
+            # The first and the last frames are skipped due to padding zeros to original
+            # reconstructed_frames.append(frame_inv[i])
             i+=1
         else:
             #print(i)

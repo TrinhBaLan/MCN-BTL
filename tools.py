@@ -70,7 +70,7 @@ def plot_waveform(samplerate, original_data, transformed_data, number_of_channel
     :param samplerate: Sample rate of the audio file
     :param data: Audio data as numpy array
     """
-    length = len(original_data[0])/samplerate
+    length = len(original_data[0])
     time = np.linspace(0., length, original_data[0].shape[0])
     fig, ax = plt.subplots(number_of_channels)
     axs = []
@@ -91,7 +91,10 @@ def plot_waveform(samplerate, original_data, transformed_data, number_of_channel
         elif i == 1:
             axs[i].set_title('Right Channel')
         '''
-    plt.savefig("graph.png")           
+    fig.savefig("graph.png")
+    print('Save figure to ./graph.png')
+    #plt.show()
+    #print('Show?')
 
     '''
     time = np.linspace(0., length, data.shape[0])
@@ -105,9 +108,13 @@ def plot_waveform(samplerate, original_data, transformed_data, number_of_channel
 
 def mse_eval(data, reconstructed_data):
     sum = 0.0
+    mse = 0.0
     for i  in range (0, len(data)):
-        sum += (int(reconstructed_data[i]) - int(data[i]))**2
-    return sum/len(data)
+        for j in range(0, len(data[i])):
+            sum += (int(reconstructed_data[i][j]) - int(data[i][j]))**2
+        mse += sum/len(data[i])
+        sum = 0.0
+    return mse
     
 def split_channel(data):
     """
@@ -120,5 +127,21 @@ def split_channel(data):
         left_channel = data[:, 0]
         right_channel = data[:, 1]
         return [left_channel, right_channel]
+
+def plot_error_function(data, reconstructed_data):
+    error = [[] for _ in range(len(data))]
+    for i in range(0, len(data)):
+        for j in range(0, len(data[i])):
+            error[i].append( (reconstructed_data[i][j]-data[i][j]) )
+    er_fig, axis = plt.subplots(len(data))
+    axes = []
+    if (len(data) == 1):
+        axes.append(axis)
+    elif (len(data) == 2):
+        axes.extend(axis)
+    for i in range(len(data)):
+        axes[i].plot(range(len(error[i])), error[i])
+    er_fig.savefig('error.png')
+    #plt.show()
 
 
