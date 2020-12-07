@@ -93,7 +93,7 @@ def plot_waveform(samplerate, original_data, transformed_data, number_of_channel
         '''
     fig.savefig("graph.png")
     print('Save figure to ./graph.png')
-    #plt.show()
+    plt.show()
     #print('Show?')
 
     '''

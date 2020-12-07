@@ -12,6 +12,7 @@ def mdct_transform(sample_rate, data, file, sample_per_frame, compress_ratio):
     # matrix = gen_matrix(sample_per_frame//2)
     # matrix to transform 2 frames at once
     matrix = gen_matrix(sample_per_frame)
+    win = gen_window(sample_per_frame)
 
     # Pad zeroes so the data can be divided by sample_per_frame
     print("Padding zeroes to original data...")
@@ -35,7 +36,10 @@ def mdct_transform(sample_rate, data, file, sample_per_frame, compress_ratio):
     mdct = []
     for i in range(0, count-1):
         # Merge frame i with i+1 then perform MDCT
-        tmp = dot(matrix, hstack((frame[i],(frame[i+1]))).T)
+        filtered_frame = hstack((frame[i],frame[i+1]))
+        for j in range(0, len(filtered_frame)):
+            filtered_frame[j] *= win[j]
+        tmp = dot(matrix, filtered_frame.T)
         mdct.append(tmp)
     samples_keep = int(round(sample_per_frame*compress_ratio))
 
@@ -57,7 +61,9 @@ def mdct_transform(sample_rate, data, file, sample_per_frame, compress_ratio):
     for mdct_frame in compressed_mdct:
         # Pad zeroes to frame to restore size
         mdct_frame = pad(mdct_frame, (0, (sample_per_frame - samples_keep)), "constant", constant_values=0)
-        tmp = dot(matrix.T, mdct_frame)/sample_per_frame
+        tmp = 2*dot(matrix.T, mdct_frame)/sample_per_frame
+        for i in range(0, len(tmp)):
+            tmp[i] *= win[i]
         frame_inv.append(tmp[:sample_per_frame])
         frame_inv.append(tmp[sample_per_frame:])
     #print(len(frame_inv))
@@ -96,6 +102,15 @@ def gen_matrix(samples):
     matrix = zeros(shape=(samples, samples * 2))
     for k in range(0, samples):
         for n in range(0, samples * 2):
-            temp = 2 * pi * (2 * n + 1 + samples) * (2 * k + 1)
-            matrix[k][n] = math.cos(temp / (8 * samples))
+            #temp = 2 * pi * (2 * n + 1 + samples) * (2 * k + 1)
+            temp = pi/samples * (n + 0.5 + samples/2) * (k + 0.5)
+            #matrix[k][n] = math.cos(temp / (8 * samples))
+            matrix[k][n] = math.cos(temp)
     return matrix
+
+def gen_window(samples):
+    win = []
+    for n in range(0, 2*samples):
+        tmp = pi/(2*samples) * (n+0.5)
+        win.append(math.sin(tmp))
+    return win
