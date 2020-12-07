@@ -1,7 +1,7 @@
 from tools import *
 from numpy import pad, array, zeros, dot, hstack
 import math
-from CompressedFile import CompressedFile
+from CompressedFile import *
 
 pi = math.pi
 
@@ -53,7 +53,7 @@ def mdct_transform(sample_rate, data, file, sample_per_frame, compress_ratio):
     # Write the compressed data to a new binary file with extension cpz
     print("Writing to a compressed file in './compressed/mdct/' ...")
     filename = file.split("/")[1] # Get the filename
-    compressed = CompressedFile("MDCT", compressed_data)
+    compressed = CompressedFile(Type.MDCT, compressed_data)
     write_compressed_file(compressed, "mdct/" + filename.split(".")[0] + ".cpz")
 
     # Inverse MDCT and split into halfs

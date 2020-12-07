@@ -1,3 +1,5 @@
+from enum import Enum
+
 class CompressedFile:
     """
     Basic compressed file structure
@@ -6,4 +8,6 @@ class CompressedFile:
         self.header = header
         self.data = data
 
-
+class Type(Enum):
+    DCT = 1
+    MDCT = 2

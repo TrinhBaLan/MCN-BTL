@@ -1,7 +1,7 @@
 from scipy.fft import dct, idct
 from tools import *
 from numpy import pad, array, round
-from CompressedFile import CompressedFile
+from CompressedFile import *
 
 def dct_transform(sample_rate, data, file, sample_per_frame, compress_ratio):
     print("Original data: ", data)
@@ -34,7 +34,7 @@ def dct_transform(sample_rate, data, file, sample_per_frame, compress_ratio):
     # Write the compressed data to a new binary file with extension cpz
     print("Writing to a compressed file in './compressed/dct/' ...")
     filename = file.split("/")[1] # Get the filename
-    compressed = CompressedFile("DCT", compressed_data)
+    compressed = CompressedFile(Type.DCT, compressed_data)
     write_compressed_file(compressed, "dct/" + filename.split(".")[0] + ".cpz")
 
     # Reconstruct the data array from frames
